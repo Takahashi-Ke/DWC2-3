@@ -20,6 +20,10 @@
   </div>
 
   <div class="actions row">
-    <%= f.submit class: 'btn btn-primary col-xs-12' %>
+    <% if book.new_record? %>
+      <%= f.submit "Create Book", class: 'btn btn-primary col-xs-12' %>
+    <% else %>
+      <%= f.submit "Update Book", class: 'btn btn-primary col-xs-12' %>
+    <% end %>
   </div>
 <% end %>

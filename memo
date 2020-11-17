@@ -1,0 +1,52 @@
+2020/11/17
+❶苦戦したエラー
+    param is missing or the value is empty:
+      →パラメーターが空
+    userモデルとbookモデルに関連づけているPostCommentモデル
+    
+    ◆ エラー時
+        private
+        def post_comment_params
+          params.require(:post_comment).permit(:comment)
+        end
+        
+    ◆ 解決方法
+        require(:post_comment)の部分を消したら解決した
+        しかし、その後require(:post_comment)を付け直してもうまく動作した。
+        何故できたのかは不明。
+      
+    ◆ 参考サイト
+      https://stackoverflow.com/questions/47391168/param-is-missing-or-the-value-is-empty-in-nested-resource-method
+  
+
+❷submitで送信しても何も起こらない時の対処
+    logger.debug post_comment.errors.inspect
+    で、post後のログを表示させてエラーを見つける
+    createアクションをするときは、関連するモデルを全て定義してあげなければいけない。
+  　
+  　◆原因
+  　  今回の場合はコメントを投稿する際に、createアクション内にuserを定義していなかった。
+  　  そのため、「user.id」が空ですよというエラーが出たと思われる。
+  　  
+  ❸コメントを投稿すると、viewページに
+    [#<PostComment id: 11, user_id: 3, book_id: 7, comment: "テスト", created_at: "2020-11-17 04:09:22", updated_at: "2020-11-17 04:09:22">]
+    のように、テーブルに保存した内容が勝手に表示される。
+    
+    ◆原因
+      <%= @book.post_comments.each do |pc| %>
+      each文の先頭には＝を付けていた。
+      
+  ❹いいね機能のルーティングエラーに手間取った
+    ◆ 原因
+      <%= link_to book_favorite_path(book), method: :delete do %>
+      引数にbookのデータしか渡していなかったため。
+      Favoriteが空になっていた
+      
+    ◆ 解決策
+      <%= link_to book_favorite_path(book, book.ravorites), method: :delete do %>
+      
+      
+  ❺新たに覚えたメソッド
+    redirect_to request.referer
+    遷移元のURLを取得してリダイレクトする
+    ◆参考サイト https://qiita.com/sew_sou19/items/21974ec512c0a9b329aa
