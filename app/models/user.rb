@@ -8,6 +8,18 @@ class User < ApplicationRecord
   has_many :post_comments, dependent: :destroy
   has_many :favorites, dependent: :destroy
   
+
+  
+  has_many :following_users, class_name:"Relationships", foreign_key:"follower_id", dependent: :destroy
+  # @user.booksのように、@user.yyyで、
+  # フォローされている人の一覧を出したい
+  has_many :followed_users, through: :relationships, source:followed
+  
+  has_many :followed_users, class_name:"Relationships", foreign_key:"followed_id", dependent: :destroy
+  # @user.booksのように、@user.yyyで、
+  # そのユーザがフォローしているの一覧を出したい
+  has_many :following_users, through: :relationships, source:following
+  
   attachment :profile_image, destroy: false
 
   validates :name, presence: true, length: {maximum: 20, minimum: 2}, uniqueness: true
